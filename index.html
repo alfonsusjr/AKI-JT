@@ -23,10 +23,20 @@ body{
     box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
-h1{
+.header{
     text-align:center;
     margin-bottom:30px;
-    color:#333;
+}
+
+.header h1{
+    color:#0066ff;
+    margin-bottom:10px;
+    font-size:28px;
+}
+
+.header p{
+    color:#666;
+    font-size:14px;
 }
 
 label{
@@ -55,6 +65,7 @@ button{
     color:white;
     font-size:16px;
     cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
@@ -93,7 +104,15 @@ button:hover{
 
 <div class="container">
 
-    <h1>Kalkulator Kelayakan Pengajuan JT Madiun</h1>
+    <div class="header">
+
+        <h1>Kalkulator Kelayakan Pengajuan JT Madiun</h1>
+
+        <p>
+            Analisa otomatis kelayakan berdasarkan RAB dan Revenue
+        </p>
+
+    </div>
 
     <label>Total RAB</label>
     <input type="text" id="rab" placeholder="Contoh: 20.000.000">
@@ -102,13 +121,26 @@ button:hover{
     <input type="text" id="tagihan" placeholder="Contoh: 2.500.000">
 
     <label>Pilih Kontrak / Tahun</label>
+
     <select id="tahun">
-        <option value="12">1 Tahun (12 Bulan)</option>
-        <option value="24">2 Tahun (24 Bulan)</option>
-        <option value="36">3 Tahun (36 Bulan)</option>
+
+        <option value="12">
+            1 Tahun (12 Bulan)
+        </option>
+
+        <option value="24">
+            2 Tahun (24 Bulan)
+        </option>
+
+        <option value="36">
+            3 Tahun (36 Bulan)
+        </option>
+
     </select>
 
-    <button onclick="hitungAKI()">Hitung Analisa</button>
+    <button onclick="hitungAKI()">
+        Hitung Analisa
+    </button>
 
     <div class="result" id="resultBox">
 
@@ -156,18 +188,24 @@ function formatInput(id){
     });
 }
 
-// AKTIFKAN FORMAT
+// AKTIFKAN FORMAT INPUT
 formatInput("rab");
 formatInput("tagihan");
 
-// HITUNG AKI
+// HITUNG ANALISA
 function hitungAKI(){
 
-    let rab = ambilAngka(document.getElementById("rab").value);
+    let rab = ambilAngka(
+        document.getElementById("rab").value
+    );
 
-    let tagihan = ambilAngka(document.getElementById("tagihan").value);
+    let tagihan = ambilAngka(
+        document.getElementById("tagihan").value
+    );
 
-    let bulan = parseInt(document.getElementById("tahun").value);
+    let bulan = parseInt(
+        document.getElementById("tahun").value
+    );
 
     // VALIDASI
     if(rab <= 0 || tagihan <= 0){
@@ -177,16 +215,16 @@ function hitungAKI(){
         return;
     }
 
-    // HITUNG REVENUE
+    // HITUNG TOTAL REVENUE
     let revenue = tagihan * bulan;
 
-    // HITUNG PERSENTASE
+    // HITUNG PERSENTASE AKI
     let persentase = (rab / revenue) * 100;
 
     let status = "";
     let classStatus = "";
 
-    // STATUS KELAYAKAN
+    // CEK KELAYAKAN
     if(persentase <= 30){
 
         status = "LAYAK";
@@ -217,7 +255,9 @@ function hitungAKI(){
         "<b>Persentase AKI:</b> " + persentase.toFixed(2) + "%";
 
     document.getElementById("hasilStatus").innerHTML =
-        "<b>Status:</b> <span class='" + classStatus + "'>" + status + "</span>";
+        "<b>Status:</b> <span class='" + classStatus + "'>" +
+        status +
+        "</span>";
 }
 
 </script>
