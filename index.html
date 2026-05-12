@@ -97,10 +97,10 @@ button:hover{
     <h1>Kalkulator AKI</h1>
 
     <label>Total RAB</label>
-    <input type="number" id="rab" placeholder="Contoh: 20000000">
+    <input type="text" id="rab" placeholder="Contoh: 20.000.000">
 
     <label>Tagihan Bulanan</label>
-    <input type="number" id="tagihan" placeholder="Contoh: 2500000">
+    <input type="text" id="tagihan" placeholder="Contoh: 2.500.000">
 
     <label>Pilih Kontrak / Tahun</label>
     <select id="tahun">
@@ -131,38 +131,67 @@ button:hover{
 
 <script>
 
+// FORMAT ANGKA KE RUPIAH
 function formatRupiah(angka){
 
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR'
-    }).format(angka);
+    return new Intl.NumberFormat('id-ID').format(angka);
 }
 
+// AMBIL ANGKA ASLI
+function ambilAngka(input){
+
+    return parseInt(input.replace(/\./g, '')) || 0;
+}
+
+// FORMAT INPUT OTOMATIS
+function formatInput(element){
+
+    let angka = ambilAngka(element.value);
+
+    element.value = formatRupiah(angka);
+}
+
+// EVENT INPUT RAB
+document.getElementById('rab').addEventListener('input', function(){
+
+    formatInput(this);
+
+});
+
+// EVENT INPUT TAGIHAN
+document.getElementById('tagihan').addEventListener('input', function(){
+
+    formatInput(this);
+
+});
+
+// HITUNG AKI
 function hitungAKI(){
 
-    let rab = parseFloat(document.getElementById('rab').value);
+    let rab = ambilAngka(document.getElementById('rab').value);
 
-    let tagihan = parseFloat(document.getElementById('tagihan').value);
+    let tagihan = ambilAngka(document.getElementById('tagihan').value);
 
-    let bulan = parseFloat(document.getElementById('tahun').value);
+    let bulan = parseInt(document.getElementById('tahun').value);
 
-    if(isNaN(rab) || isNaN(tagihan) || isNaN(bulan)){
+    // VALIDASI
+    if(rab <= 0 || tagihan <= 0){
 
-        alert('Mohon isi semua data');
+        alert('Mohon isi data dengan benar');
 
         return;
     }
 
-    // Revenue otomatis
+    // HITUNG REVENUE
     let revenue = tagihan * bulan;
 
-    // Persentase AKI
+    // HITUNG PERSENTASE AKI
     let persentase = (rab / revenue) * 100;
 
     let status = '';
     let classStatus = '';
 
+    // CEK KELAYAKAN
     if(persentase <= 30){
 
         status = 'LAYAK';
@@ -174,19 +203,20 @@ function hitungAKI(){
         classStatus = 'danger';
     }
 
+    // TAMPILKAN HASIL
     document.getElementById('resultBox').style.display = 'block';
 
     document.getElementById('hasilRab').innerHTML =
-        '<b>Total RAB:</b> ' + formatRupiah(rab);
+        '<b>Total RAB:</b> Rp ' + formatRupiah(rab);
 
     document.getElementById('hasilTagihan').innerHTML =
-        '<b>Tagihan Bulanan:</b> ' + formatRupiah(tagihan);
+        '<b>Tagihan Bulanan:</b> Rp ' + formatRupiah(tagihan);
 
     document.getElementById('hasilKontrak').innerHTML =
         '<b>Masa Kontrak:</b> ' + bulan + ' Bulan';
 
     document.getElementById('hasilRevenue').innerHTML =
-        '<b>Total Revenue:</b> ' + formatRupiah(revenue);
+        '<b>Total Revenue:</b> Rp ' + formatRupiah(revenue);
 
     document.getElementById('hasilPersentase').innerHTML =
         '<b>Persentase AKI:</b> ' + persentase.toFixed(2) + '%';
