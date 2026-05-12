@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kalkulator Kelayakan Pengajuan JT</title>
+<title>Kalkulator AKI</title>
 
 <style>
 
@@ -15,7 +15,7 @@ body{
 }
 
 .container{
-    max-width:500px;
+    max-width:550px;
     margin:50px auto;
     background:white;
     padding:30px;
@@ -36,7 +36,7 @@ label{
     color:#444;
 }
 
-input{
+input, select{
     width:100%;
     padding:12px;
     border:1px solid #ccc;
@@ -73,15 +73,18 @@ button:hover{
 .success{
     color:green;
     font-weight:bold;
+    font-size:20px;
 }
 
 .danger{
     color:red;
     font-weight:bold;
+    font-size:20px;
 }
 
 .item{
-    margin-bottom:10px;
+    margin-bottom:12px;
+    font-size:16px;
 }
 
 </style>
@@ -91,21 +94,37 @@ button:hover{
 
 <div class="container">
 
-    <h1>Kalkulator Kelayakan Pengajuan JT</h1>
+    <h1>Kalkulator AKI</h1>
 
     <label>Total RAB</label>
     <input type="number" id="rab" placeholder="Contoh: 20000000">
 
-    <label>Total Revenue</label>
-    <input type="number" id="revenue" placeholder="Contoh: 100000000">
+    <label>Tagihan Bulanan</label>
+    <input type="number" id="tagihan" placeholder="Contoh: 2500000">
+
+    <label>Pilih Kontrak / Tahun</label>
+    <select id="tahun">
+        <option value="12">1 Tahun (12 Bulan)</option>
+        <option value="24">2 Tahun (24 Bulan)</option>
+        <option value="36">3 Tahun (36 Bulan)</option>
+    </select>
 
     <button onclick="hitungAKI()">Hitung Analisa</button>
 
     <div class="result" id="resultBox">
+
         <div class="item" id="hasilRab"></div>
+
+        <div class="item" id="hasilTagihan"></div>
+
+        <div class="item" id="hasilKontrak"></div>
+
         <div class="item" id="hasilRevenue"></div>
+
         <div class="item" id="hasilPersentase"></div>
+
         <div class="item" id="hasilStatus"></div>
+
     </div>
 
 </div>
@@ -113,6 +132,7 @@ button:hover{
 <script>
 
 function formatRupiah(angka){
+
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR'
@@ -122,15 +142,22 @@ function formatRupiah(angka){
 function hitungAKI(){
 
     let rab = parseFloat(document.getElementById('rab').value);
-    let revenue = parseFloat(document.getElementById('revenue').value);
 
-    if(isNaN(rab) || isNaN(revenue) || revenue <= 0){
+    let tagihan = parseFloat(document.getElementById('tagihan').value);
 
-        alert('Mohon isi data dengan benar');
+    let bulan = parseFloat(document.getElementById('tahun').value);
+
+    if(isNaN(rab) || isNaN(tagihan) || isNaN(bulan)){
+
+        alert('Mohon isi semua data');
 
         return;
     }
 
+    // Revenue otomatis
+    let revenue = tagihan * bulan;
+
+    // Persentase AKI
     let persentase = (rab / revenue) * 100;
 
     let status = '';
@@ -151,6 +178,12 @@ function hitungAKI(){
 
     document.getElementById('hasilRab').innerHTML =
         '<b>Total RAB:</b> ' + formatRupiah(rab);
+
+    document.getElementById('hasilTagihan').innerHTML =
+        '<b>Tagihan Bulanan:</b> ' + formatRupiah(tagihan);
+
+    document.getElementById('hasilKontrak').innerHTML =
+        '<b>Masa Kontrak:</b> ' + bulan + ' Bulan';
 
     document.getElementById('hasilRevenue').innerHTML =
         '<b>Total Revenue:</b> ' + formatRupiah(revenue);
