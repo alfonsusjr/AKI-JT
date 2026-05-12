@@ -55,7 +55,6 @@ button{
     color:white;
     font-size:16px;
     cursor:pointer;
-    transition:0.3s;
 }
 
 button:hover{
@@ -131,53 +130,49 @@ button:hover{
 
 <script>
 
-// FORMAT ANGKA KE RUPIAH
-function formatRupiah(angka){
+// FORMAT ANGKA DENGAN TITIK
+function formatAngka(angka){
 
-    return new Intl.NumberFormat('id-ID').format(angka);
+    return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 // AMBIL ANGKA ASLI
-function ambilAngka(input){
+function ambilAngka(value){
 
-    return parseInt(input.replace(/\./g, '')) || 0;
+    return parseInt(value.replace(/\D/g, "")) || 0;
 }
 
 // FORMAT INPUT OTOMATIS
-function formatInput(element){
+function formatInput(id){
 
-    let angka = ambilAngka(element.value);
+    let input = document.getElementById(id);
 
-    element.value = formatRupiah(angka);
+    input.addEventListener("keyup", function(){
+
+        let angka = ambilAngka(this.value);
+
+        this.value = formatAngka(angka);
+
+    });
 }
 
-// EVENT INPUT RAB
-document.getElementById('rab').addEventListener('input', function(){
-
-    formatInput(this);
-
-});
-
-// EVENT INPUT TAGIHAN
-document.getElementById('tagihan').addEventListener('input', function(){
-
-    formatInput(this);
-
-});
+// AKTIFKAN FORMAT
+formatInput("rab");
+formatInput("tagihan");
 
 // HITUNG AKI
 function hitungAKI(){
 
-    let rab = ambilAngka(document.getElementById('rab').value);
+    let rab = ambilAngka(document.getElementById("rab").value);
 
-    let tagihan = ambilAngka(document.getElementById('tagihan').value);
+    let tagihan = ambilAngka(document.getElementById("tagihan").value);
 
-    let bulan = parseInt(document.getElementById('tahun').value);
+    let bulan = parseInt(document.getElementById("tahun").value);
 
     // VALIDASI
     if(rab <= 0 || tagihan <= 0){
 
-        alert('Mohon isi data dengan benar');
+        alert("Mohon isi data dengan benar");
 
         return;
     }
@@ -185,44 +180,44 @@ function hitungAKI(){
     // HITUNG REVENUE
     let revenue = tagihan * bulan;
 
-    // HITUNG PERSENTASE AKI
+    // HITUNG PERSENTASE
     let persentase = (rab / revenue) * 100;
 
-    let status = '';
-    let classStatus = '';
+    let status = "";
+    let classStatus = "";
 
-    // CEK KELAYAKAN
+    // STATUS KELAYAKAN
     if(persentase <= 30){
 
-        status = 'LAYAK';
-        classStatus = 'success';
+        status = "LAYAK";
+        classStatus = "success";
 
     }else{
 
-        status = 'TIDAK LAYAK';
-        classStatus = 'danger';
+        status = "TIDAK LAYAK";
+        classStatus = "danger";
     }
 
     // TAMPILKAN HASIL
-    document.getElementById('resultBox').style.display = 'block';
+    document.getElementById("resultBox").style.display = "block";
 
-    document.getElementById('hasilRab').innerHTML =
-        '<b>Total RAB:</b> Rp ' + formatRupiah(rab);
+    document.getElementById("hasilRab").innerHTML =
+        "<b>Total RAB:</b> Rp " + formatAngka(rab);
 
-    document.getElementById('hasilTagihan').innerHTML =
-        '<b>Tagihan Bulanan:</b> Rp ' + formatRupiah(tagihan);
+    document.getElementById("hasilTagihan").innerHTML =
+        "<b>Tagihan Bulanan:</b> Rp " + formatAngka(tagihan);
 
-    document.getElementById('hasilKontrak').innerHTML =
-        '<b>Masa Kontrak:</b> ' + bulan + ' Bulan';
+    document.getElementById("hasilKontrak").innerHTML =
+        "<b>Masa Kontrak:</b> " + bulan + " Bulan";
 
-    document.getElementById('hasilRevenue').innerHTML =
-        '<b>Total Revenue:</b> Rp ' + formatRupiah(revenue);
+    document.getElementById("hasilRevenue").innerHTML =
+        "<b>Total Revenue:</b> Rp " + formatAngka(revenue);
 
-    document.getElementById('hasilPersentase').innerHTML =
-        '<b>Persentase AKI:</b> ' + persentase.toFixed(2) + '%';
+    document.getElementById("hasilPersentase").innerHTML =
+        "<b>Persentase AKI:</b> " + persentase.toFixed(2) + "%";
 
-    document.getElementById('hasilStatus').innerHTML =
-        '<b>Status:</b> <span class="' + classStatus + '">' + status + '</span>';
+    document.getElementById("hasilStatus").innerHTML =
+        "<b>Status:</b> <span class='" + classStatus + "'>" + status + "</span>";
 }
 
 </script>
